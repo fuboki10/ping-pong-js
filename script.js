@@ -1,4 +1,4 @@
-import { ballSpeedX, ballSpeedY, paddleSpeed, paddleHeight, paddleWidth } from "./constants";
+import { ballSpeedX, ballSpeedY, paddleSpeed, paddleHeight, paddleWidth } from "./constants.js";
 
 // Canvas and context
 const canvas = document.getElementById('gameCanvas');
