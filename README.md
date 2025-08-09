@@ -31,7 +31,6 @@ A classic Ping Pong (Pong) game built with HTML5 Canvas, CSS, and JavaScript.
 - `index.html` - Main HTML file with game layout
 - `style.css` - Styling and responsive design
 - `script.js` - Game logic and canvas rendering
-- `constants.js` - Game constants and configuration
 
 ## Running the Game
 
@@ -45,6 +44,5 @@ You can easily customize the game by modifying:
 - Game speed and physics in `script.js`
 - Colors and styling in `style.css`
 - Paddle and ball properties in the game object
-- Game constants in `constants.js`
 
 Enjoy playing!

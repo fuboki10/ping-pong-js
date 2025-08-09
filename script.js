@@ -1,4 +1,11 @@
-import { ballSpeedX, ballSpeedY, paddleSpeed, paddleHeight, paddleWidth } from "./constants.js";
+// constants
+const ballSpeedX = 8; // Speed of the ball in the X direction
+const ballSpeedY = 5; // Speed of the ball in the Y direction
+const paddleSpeed = 8; // Speed of the paddles
+const paddleWidth = 15; // Width of the paddles
+const paddleHeight = 100; // Height of the paddles
+const MAX_FPS = 60; // Maximum frames per second
+const FRAME_INTERVAL_MS = 1000 / MAX_FPS; // Frame interval in milliseconds
 
 // Canvas and context
 const canvas = document.getElementById('gameCanvas');
@@ -6,6 +13,9 @@ const ctx = canvas.getContext('2d');
 
 // Game state
 let gameRunning = false;
+let gamePaused = false;
+let lastTime = 0; // For tracking time in the game loop
+// Animation frame ID
 let animationId;
 
 // Game objects
@@ -45,6 +55,8 @@ const keys = {};
 
 document.addEventListener('keydown', (e) => {
     keys[e.key] = true;
+    // Handle game status controls
+    handleGameStatusControls();
 });
 
 document.addEventListener('keyup', (e) => {
@@ -60,19 +72,37 @@ document.getElementById('resetBtn').addEventListener('click', resetGame);
 function startGame() {
     if (!gameRunning) {
         gameRunning = true;
-        gameLoop();
+        animationId = requestAnimationFrame(gameLoop);
     }
 }
 
 function pauseGame() {
-    gameRunning = false;
-    if (animationId) {
-        cancelAnimationFrame(animationId);
+    console.log('Pausing game');
+    if (!gameRunning) return;
+    gamePaused = true;
+}
+
+function resumeGame() {
+    console.log('Resuming game');
+    if (!gameRunning) return;
+    gamePaused = false;
+}
+
+function togglePause() {
+    if (gamePaused) {
+        resumeGame();
+    } else {
+        pauseGame();
     }
 }
 
 function resetGame() {
-    pauseGame();
+    if (gameRunning) {
+        gameRunning = false;
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+        }
+    }
 
     // Reset ball position
     game.ball.x = canvas.width / 2;
@@ -135,7 +165,7 @@ function updateBall() {
 
         // Add some variation to ball direction based on where it hits the paddle
         const hitPos = (game.ball.y - game.paddle1.y) / game.paddle1.height;
-        game.ball.speedY = (hitPos - 0.5) * 10;
+        game.ball.speedY = (hitPos - 0.5) * 20;
     }
 
     // Right paddle collision
@@ -165,8 +195,8 @@ function updateBall() {
 function resetBall() {
     game.ball.x = canvas.width / 2;
     game.ball.y = canvas.height / 2;
-    game.ball.speedX = 5 * (Math.random() > 0.5 ? 1 : -1);
-    game.ball.speedY = 3 * (Math.random() > 0.5 ? 1 : -1);
+    game.ball.speedX = ballSpeedX * (Math.random() > 0.5 ? 1 : -1);
+    game.ball.speedY = ballSpeedY * (Math.random() > 0.5 ? 1 : -1);
 }
 
 function updateScore() {
@@ -206,24 +236,48 @@ function drawGame() {
 function handleGameStatusControls() {
     // Pause game on Escape or 'p' key
     if (keys['Escape'] || keys['Esc'] || keys['p'] || keys['P']) {
-        pauseGame();
+        togglePause();
     }
     // Reset game on 'r' key
     if (keys['r'] || keys['R']) {
         resetGame();
     }
+
+    // Start or pause the game
+    if (keys['Enter'] || keys[' ']) {
+        if (gameRunning) {
+            resumeGame();
+        } else {
+            startGame();
+        }
+    }
 }
 
-
-function gameLoop() {
+function updateGame() {
     if (!gameRunning) return;
 
     updatePaddles();
-    updateBall();
-    drawGame();
 
-    // check game status controls
-    handleGameStatusControls();
+    if (!gamePaused) {
+        updateBall();
+    }
+
+    drawGame();
+}
+
+function gameLoop(timestamp) {
+    // Control FPS
+    const deltaTime = timestamp - lastTime;
+    if (deltaTime < FRAME_INTERVAL_MS) {
+        animationId = requestAnimationFrame(gameLoop);
+        return;
+    }
+
+    // Update game state
+    updateGame();
+
+    // update the last time for FPS control
+    lastTime = timestamp;
 
     animationId = requestAnimationFrame(gameLoop);
 }
