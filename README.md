@@ -11,6 +11,9 @@ A classic Ping Pong (Pong) game built with HTML5 Canvas, CSS, and JavaScript.
 - **Keyboard Controls**:
   - Player 1: W (up), S (down)
   - Player 2: Arrow Up, Arrow Down
+  - Toggle Pause: Esc, P
+  - Reset: R
+  - Start Game: Space or Enter
 
 ## How to Play
 
@@ -44,5 +47,11 @@ You can easily customize the game by modifying:
 - Game speed and physics in `script.js`
 - Colors and styling in `style.css`
 - Paddle and ball properties in the game object
+
+## Screenshots
+
+![Game Screenshot 1](images/screenshot1.png)
+![Game Screenshot 2](images/screenshot2.png)
+![Game Screenshot 3](images/screenshot3.png)
 
 Enjoy playing!
